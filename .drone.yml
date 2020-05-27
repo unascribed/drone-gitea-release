@@ -291,42 +291,42 @@ trigger:
 depends_on:
 - testing
 
-#---
-#kind: pipeline
-#name: notifications
-#
-#platform:
-#  os: linux
-#  arch: amd64
-#
-#steps:
-#- name: manifest
-#  pull: always
-#  image: plugins/manifest
-#  settings:
-#    auto_tag: true
-#    ignore_missing: true
-#    password:
-#      from_secret: docker_password
-#    spec: docker/manifest.tmpl
-#    username:
-#      from_secret: docker_username
-#
-#- name: microbadger
-#  pull: always
-#  image: plugins/webhook
-#  settings:
-#    urls:
-#      from_secret: microbadger_url
-#
-#trigger:
-#  ref:
-#  - refs/heads/master
-#  - "refs/tags/**"
-#
-#depends_on:
-#- linux-amd64
-#- linux-arm64
-#- linux-arm
-#
-#...
+---
+kind: pipeline
+name: notifications
+
+platform:
+  os: linux
+  arch: amd64
+
+steps:
+- name: manifest
+  pull: always
+  image: plugins/manifest
+  settings:
+    auto_tag: true
+    ignore_missing: true
+    password:
+      from_secret: docker_password
+    spec: docker/manifest.tmpl
+    username:
+      from_secret: docker_username
+
+- name: microbadger
+  pull: always
+  image: plugins/webhook
+  settings:
+    urls:
+      from_secret: microbadger_url
+
+trigger:
+  ref:
+  - refs/heads/master
+  - "refs/tags/**"
+
+depends_on:
+- linux-amd64
+- linux-arm64
+- linux-arm
+
+...
