@@ -73,6 +73,12 @@ func main() {
 			EnvVar: "PLUGIN_TITLE,GITEA_RELEASE_TITLE",
 		},
 		cli.StringFlag{
+			Name:   "tag",
+			Value:  "",
+			Usage:  "file or string with tag for the release",
+			EnvVar: "PLUGIN_NOTE,GITEA_RELEASE_TAG",
+		},
+		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
 			EnvVar: "DRONE_REPO_OWNER",
@@ -132,6 +138,7 @@ func run(c *cli.Context) error {
 			Insecure:   c.Bool("insecure"),
 			Title:      c.String("title"),
 			Note:       c.String("note"),
+			Tag:        c.String("tag"),
 		},
 	}
 
