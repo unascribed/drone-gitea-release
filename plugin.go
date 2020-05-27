@@ -53,9 +53,18 @@ func (p Plugin) Exec() error {
 	var (
 		files []string
 	)
+	var err error
 
 	if p.Build.Event != "tag" && len(p.Config.Tag) == 0 {
 		return fmt.Errorf("The Gitea Release plugin is only available for tags")
+	}
+
+	if p.Config.Tag != "" {
+		if p.Config.Tag, err = readStringOrFile(p.Config.Tag); err != nil {
+			return fmt.Errorf("error while reading %s: %v", p.Config.Tag, err)
+		}
+	} else {
+		p.Config.Tag = strings.TrimPrefix(p.Commit.Ref, "refs/tags/")
 	}
 
 	if p.Config.APIKey == "" {
@@ -74,7 +83,6 @@ func (p Plugin) Exec() error {
 		p.Config.BaseURL = p.Config.BaseURL + "/"
 	}
 
-	var err error
 	if p.Config.Note != "" {
 		if p.Config.Note, err = readStringOrFile(p.Config.Note); err != nil {
 			return fmt.Errorf("error while reading %s: %v", p.Config.Note, err)
@@ -125,16 +133,11 @@ func (p Plugin) Exec() error {
 		client.SetHTTPClient(insecureClient)
 	}
 
-	tag := p.Config.Tag
-	if len(tag) == 0 {
-		tag = strings.TrimPrefix(p.Commit.Ref, "refs/tags/")
-	}
-
 	rc := releaseClient{
 		Client:     client,
 		Owner:      p.Repo.Owner,
 		Repo:       p.Repo.Name,
-		Tag:        tag,
+		Tag:        p.Config.Tag,
 		Draft:      p.Config.Draft,
 		Prerelease: p.Config.PreRelease,
 		FileExists: p.Config.FileExists,
