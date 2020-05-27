@@ -38,6 +38,7 @@ type (
 		BaseURL    string
 		Title      string
 		Note       string
+		Tag        string
 	}
 
 	Plugin struct {
@@ -53,7 +54,7 @@ func (p Plugin) Exec() error {
 		files []string
 	)
 
-	if p.Build.Event != "tag" {
+	if p.Build.Event != "tag" && len(p.Config.Tag) == 0 {
 		return fmt.Errorf("The Gitea Release plugin is only available for tags")
 	}
 
@@ -124,11 +125,16 @@ func (p Plugin) Exec() error {
 		client.SetHTTPClient(insecureClient)
 	}
 
+	tag := p.Config.Tag
+	if len(tag) == 0 {
+		tag = strings.TrimPrefix(p.Commit.Ref, "refs/tags/")
+	}
+
 	rc := releaseClient{
 		Client:     client,
 		Owner:      p.Repo.Owner,
 		Repo:       p.Repo.Name,
-		Tag:        strings.TrimPrefix(p.Commit.Ref, "refs/tags/"),
+		Tag:        tag,
 		Draft:      p.Config.Draft,
 		Prerelease: p.Config.PreRelease,
 		FileExists: p.Config.FileExists,
