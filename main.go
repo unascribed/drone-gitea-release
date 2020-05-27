@@ -115,6 +115,9 @@ func run(c *cli.Context) error {
 			Owner: c.String("repo.owner"),
 			Name:  c.String("repo.name"),
 		},
+		Build: Build{
+			Event: c.String("build.event"),
+		},
 		Commit: Commit{
 			Ref: c.String("commit.ref"),
 		},
