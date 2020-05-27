@@ -76,7 +76,7 @@ func main() {
 			Name:   "tag",
 			Value:  "",
 			Usage:  "file or string with tag for the release",
-			EnvVar: "PLUGIN_NOTE,GITEA_RELEASE_TAG",
+			EnvVar: "PLUGIN_TAG,GITEA_RELEASE_TAG",
 		},
 		cli.StringFlag{
 			Name:   "repo.owner",
