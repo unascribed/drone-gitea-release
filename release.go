@@ -19,16 +19,27 @@ type releaseClient struct {
 	FileExists string
 	Title      string
 	Note       string
+	AllowEdit  bool
 }
 
 func (rc *releaseClient) buildRelease() (*gitea.Release, error) {
 	// first attempt to get a release by that tag
 	release, err := rc.getRelease()
 
+	if err == nil && release != nil {
+		if rc.AllowEdit {
+			release, err = rc.editRelease(release.ID)
+
+			if err != nil {
+				return nil, err
+			}
+		}
+
+		return release, nil
+	}
+
 	if err != nil && release == nil {
 		fmt.Println(err)
-	} else if release != nil {
-		return release, nil
 	}
 
 	// if no release was found by that tag, create a new one
@@ -71,6 +82,24 @@ func (rc *releaseClient) newRelease() (*gitea.Release, error) {
 	}
 
 	fmt.Printf("Successfully created %s release\n", rc.Tag)
+	return release, nil
+}
+
+func (rc *releaseClient) editRelease(id int64) (*gitea.Release, error) {
+	r := gitea.EditReleaseOption{
+		TagName:      rc.Tag,
+		IsDraft:      &rc.Draft,
+		IsPrerelease: &rc.Prerelease,
+		Title:        rc.Title,
+		Note:         rc.Note,
+	}
+
+	release, err := rc.Client.EditRelease(rc.Owner, rc.Repo, id, r)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to edit release: %s", err)
+	}
+
+	fmt.Printf("Successfully edited %s release\n", rc.Tag)
 	return release, nil
 }
 
