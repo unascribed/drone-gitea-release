@@ -78,6 +78,11 @@ func main() {
 			Usage:  "file or string with tag for the release",
 			EnvVar: "PLUGIN_TAG,GITEA_RELEASE_TAG",
 		},
+		cli.BoolFlag{
+			Name:   "allow-edit",
+			Usage:  "allows existing release to be edited",
+			EnvVar: "PLUGIN_ALLOW_EDIT,GITEA_RELEASE_ALLOW_EDIT",
+		},
 		cli.StringFlag{
 			Name:   "repo.owner",
 			Usage:  "repository owner",
@@ -139,6 +144,7 @@ func run(c *cli.Context) error {
 			Title:      c.String("title"),
 			Note:       c.String("note"),
 			Tag:        c.String("tag"),
+			AllowEdit:  c.Bool("allow-edit"),
 		},
 	}
 

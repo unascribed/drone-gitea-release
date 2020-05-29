@@ -39,6 +39,7 @@ type (
 		Title      string
 		Note       string
 		Tag        string
+		AllowEdit  bool
 	}
 
 	Plugin struct {
@@ -144,6 +145,7 @@ func (p Plugin) Exec() error {
 		FileExists: p.Config.FileExists,
 		Title:      p.Config.Title,
 		Note:       p.Config.Note,
+		AllowEdit:  p.Config.AllowEdit,
 	}
 
 	// if the title was not provided via .drone.yml we use the tag instead
