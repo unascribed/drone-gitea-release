@@ -94,7 +94,7 @@ func (rc *releaseClient) editRelease(id int64) (*gitea.Release, error) {
 		Note:         rc.Note,
 	}
 
-	release, err := rc.Client.EditRelease(rc.Owner, rc.Repo, id, r)
+	release, _, err := rc.Client.EditRelease(rc.Owner, rc.Repo, id, r)
 	if err != nil {
 		return nil, fmt.Errorf("Failed to edit release: %s", err)
 	}
