@@ -1,4 +1,4 @@
-module github.com/drone-plugins/drone-gitea-release
+module github.com/dualinventive/drone-gitea-release
 
 go 1.14
 
