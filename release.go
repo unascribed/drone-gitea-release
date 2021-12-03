@@ -125,7 +125,7 @@ files:
 					fmt.Printf("Skipping pre-existing %s artifact\n", attachment.Name)
 					continue files
 				default:
-					return fmt.Errorf("Internal error, unkown file_exist value %s", rc.FileExists)
+					return fmt.Errorf("Internal error, unknown file_exist value %s", rc.FileExists)
 				}
 			}
 		}
@@ -141,13 +141,11 @@ files:
 		}
 
 		for _, attachment := range attachments {
-			if attachment.Name == path.Base(file) {
-				if _, err := rc.Client.DeleteReleaseAttachment(rc.Owner, rc.Repo, releaseID, attachment.ID); err != nil {
-					return fmt.Errorf("Failed to delete %s artifact: %s", file, err)
-				}
-
-				fmt.Printf("Successfully deleted old %s artifact\n", attachment.Name)
+			if _, err := rc.Client.DeleteReleaseAttachment(rc.Owner, rc.Repo, releaseID, attachment.ID); err != nil {
+				return fmt.Errorf("Failed to delete %s artifact: %s", file, err)
 			}
+
+			fmt.Printf("Successfully deleted old %s artifact\n", attachment.Name)
 		}
 
 		if _, _, err = rc.Client.CreateReleaseAttachment(rc.Owner, rc.Repo, releaseID, handle, path.Base(file)); err != nil {
